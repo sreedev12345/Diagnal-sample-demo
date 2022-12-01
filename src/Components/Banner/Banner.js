@@ -50,23 +50,29 @@ const getImage = (bannerImage) => {
 const Banner = () => {
   const state = useSelector((state) => state.banner.content);
   return (
-
-   <div style={{height:'200px'}}>
-     <div
-    style={{ marginTop:'20px', display: "grid",gap:'30px', justifyContent:'center', gridTemplateColumns: "repeat(3, 0fr)" }}>
-      {state.map((banner, index) => {
-       const bannerImage = (banner['poster-image'])
-        return (
-          <div  key={index}>
-            <div >
-            <img src={getImage(bannerImage)}/>
-            <div>{banner.name}</div>
+    <div style={{ height: "200px" }}>
+      <div
+        style={{
+          marginTop: "20px",
+          display: "grid",
+          gap: "30px",
+          justifyContent: "center",
+          gridTemplateColumns: "repeat(3, 0fr)",
+        }}
+      >
+        {state.map((banner, index) => {
+          const bannerImage = banner["poster-image"];
+          return (
+            <div key={index}>
+              <div>
+                <img src={getImage(bannerImage)} />
+                <div>{banner.name}</div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
-   </div>
   );
 };
 
