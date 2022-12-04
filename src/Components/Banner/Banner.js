@@ -1,56 +1,53 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./banner.css";
-import poster1 from "../assets/poster1.jpg";
-import poster2 from "../assets/poster2.jpg";
-import poster3 from "../assets/poster3.jpg";
-import poster4 from "../assets/poster4.jpg";
-import poster5 from "../assets/poster5.jpg";
-import poster6 from "../assets/poster6.jpg";
-import poster7 from "../assets/poster7.jpg";
-import poster8 from "../assets/poster8.jpg";
-import poster9 from "../assets/poster9.jpg";
-import useLazyLoad from "../useLazyLoad";
 import "bootstrap/dist/css/bootstrap.css";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-
-const getImage = (bannerImage) => {
-  switch (bannerImage) {
-    case "poster1.jpg": {
-      return poster1;
-    }
-    case "poster2.jpg": {
-      return poster2;
-    }
-    case "poster3.jpg": {
-      return poster3;
-    }
-    case "poster4.jpg": {
-      return poster4;
-    }
-    case "poster5.jpg": {
-      return poster5;
-    }
-    case "poster6.jpg": {
-      return poster6;
-    }
-    case "poster7.jpg": {
-      return poster7;
-    }
-    case "poster8.jpg": {
-      return poster8;
-    }
-    case "poster9.jpg": {
-      return poster9;
-    }
-  }
-};
+import Bannerlist from "./Bannerlist";
 
 const Banner = () => {
+  const firstPage = 0;
+  const [lastPage, setLastPage] = useState(3);
   const state = useSelector((state) => state.banner.content);
+  const record = state.slice(firstPage, lastPage);
+  const [isLoading, setIsLoading] = useState(false);
+  const loader = useRef(null);
+
+  const handleObserver = useCallback((entries) => {
+    if (state.length === record.length) {
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(true);
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setLastPage((prev) => prev + 3);
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: "20px",
+      threshold: 0.5,
+    };
+    setIsLoading(false);
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (loader.current) {
+      observer.observe(loader.current);
+      setIsLoading(false);
+    }
+    return () => {
+      if (loader.current) {
+        setIsLoading(false);
+        observer.unobserve(loader.current);
+      }
+    };
+  }, [handleObserver]);
+
   return (
-    <div style={{ height: "200px" }}>
+    <div className="banner-container ">
+      <div className="banner-title">Romantic Comedy</div>
       <div
         style={{
           marginTop: "20px",
@@ -60,17 +57,16 @@ const Banner = () => {
           gridTemplateColumns: "repeat(3, 0fr)",
         }}
       >
-        {state.map((banner, index) => {
+        {record.map((banner, index) => {
           const bannerImage = banner["poster-image"];
           return (
             <div key={index}>
-              <div>
-                <img src={getImage(bannerImage)} />
-                <div>{banner.name}</div>
-              </div>
+              <Bannerlist banner={banner} />
             </div>
           );
         })}
+        {isLoading && state.length !== record.length && <div>loading...</div>}
+        {state.length !== record.length && <div ref={loader} />}
       </div>
     </div>
   );

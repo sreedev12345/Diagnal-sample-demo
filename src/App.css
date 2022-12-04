@@ -1,8 +1,10 @@
 body {
   color: white;
-  background-color: black;
+  background: black;
+  height: 100%;
 }
 .App {
-  max-height: 500px;
+  background-color: black; 
+  height: 100%;
 }
 
