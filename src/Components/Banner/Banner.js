@@ -58,7 +58,6 @@ const Banner = () => {
         }}
       >
         {record.map((banner, index) => {
-          const bannerImage = banner["poster-image"];
           return (
             <div key={index}>
               <Bannerlist banner={banner} />
