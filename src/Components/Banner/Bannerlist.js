@@ -38,6 +38,9 @@ const getImage = (bannerImage) => {
       case "poster9.jpg": {
         return poster9;
       }
+      default :
+        return null
+      
     }
   };
 
@@ -45,7 +48,7 @@ const Bannerlist = ({banner}) => {
     const bannerImage = banner["poster-image"];
   return (
     <div>
-      <img src={getImage(bannerImage)} />
+      <img src={getImage(bannerImage)} alt={bannerImage}/>
       <div>{banner.name}</div>
     </div>
   );
